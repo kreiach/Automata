@@ -11,12 +11,12 @@ namespace Automata.Tests
     public class LogSinkTests
     {
         [TestMethod]
-        public void With_LogEntry_default_type_is_error()
+        public void With_LogEntry_default_type_is_information()
         {
 
             LogEntry logEntry = LogEntry.Entry("This is a test");
 
-            Assert.IsTrue(logEntry.EntryType == LogEntryType.Error);
+            Assert.IsTrue(logEntry.EntryType == LogEntryType.Information);
         }
 
         [TestMethod]

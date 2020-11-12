@@ -7,6 +7,11 @@ namespace Automata.Configuration
 
     public interface ITaskGroupConfiguration
     {
+        String Name
+        {
+            get;
+            set;
+        }
 
         Type LogSink
         {

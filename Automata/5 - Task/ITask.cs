@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml;
+﻿using System.Collections.Generic;
 
 using Automata.LogSinks;
 
@@ -8,9 +6,15 @@ namespace Automata.Tasks
 {
     public interface ITask
     {
+
         string Name 
         { 
             get; set; 
+        }
+
+        string GroupName
+        {
+            get; set;
         }
 
         ILogSink LogSink 

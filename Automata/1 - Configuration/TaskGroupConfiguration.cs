@@ -9,6 +9,12 @@ namespace Automata.Configuration
     public class TaskGroupConfiguration : ITaskGroupConfiguration
     {
 
+        public String Name
+        {
+            get;
+            set;
+        }
+
         public Type LogSink
         {
             get; set;

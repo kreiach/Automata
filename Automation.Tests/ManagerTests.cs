@@ -27,7 +27,7 @@ namespace Automata.Tests
         public void With_Manager_throws_exception_when_configuration_is_not_valid()
         {
 
-            string section = @"<configuration><automata><taskgroups><taskgroup name=""Accounting"" logsink=""Null"" active=""true""><task name=""null1"" type=""Automata.AutomationTasks.MisspelledAutomationTask, Automata"" active=""false""/></taskgroup></taskgroups><logsinks><logsink name=""Null"" type=""Automata.LogSinks.NullLogSink, Automata"" /></logsinks></automata></configuration>";
+            string section = @"<configuration><automata><taskgroups><taskgroup name=""Accounting"" logsink=""Null"" active=""true""><task name=""null1"" type=""Automations.MisspelledAutomationTask, Automations"" active=""false""/></taskgroup></taskgroups><logsinks><logsink name=""Null"" type=""LogSinks.Null, LogSinks"" /></logsinks></automata></configuration>";
 
             var xdoc = new XmlDocument();
             xdoc.LoadXml(section);

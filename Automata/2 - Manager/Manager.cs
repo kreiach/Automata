@@ -12,7 +12,7 @@ using Automata.Tasks;
 
 namespace Automata.Management
 {
-    public class Manager : IManager, IDisposable
+    public partial class Manager : IManager, IDisposable
     {
 
         public static bool Enabled;
@@ -70,7 +70,12 @@ namespace Automata.Management
                     Dictionary<string, string> taskParameters = task.Item3;
 
                     if (taskParameters != null)
+                    { 
                         automationTask.Configure(taskParameters);
+                    }
+
+                    automationTask.Name = task.Item1;
+                    automationTask.GroupName = group.Name;
 
                     tasks.Add((Task)automationTask);
                 }
@@ -96,27 +101,7 @@ namespace Automata.Management
 
         //}
 
-        public void Governer() //(object source, ElapsedEventArgs e)
-        {
-           // if (Enabled)
-           // {
-             //   Running = true;
-            while (true)
-            {
-
-                foreach (var group in taskGroups)
-                {
-                    foreach (var task in group.AutomationTasks)
-                    {
-                        task.Process();
-                    }
-
-                }
-                Thread.Sleep((int)configuration.PollingInSeconds * 1000);
-            }
-           // }
-
-        }
+ 
 
 
 

@@ -13,6 +13,8 @@ namespace AutomationConsole
             Manager manager = new Manager(configuration);
 
             manager.Governer();
+
+            //while manager.Active
         }
     }
 }

@@ -1,14 +1,27 @@
-﻿using Automata.LogSinks;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Xml;
+
+using Automata.LogSinks;
 
 namespace Automata.Tasks
 {
     public abstract class Task : ITask
     {
+        private string _name;
+        public string Name 
+        {
+            get
+            {
+                return $"{GroupName}.{_name}";
+            }
+            set
+            {
+                _name = value;
+            }
+        }
 
-        public string Name { get; set; }
+        public string GroupName { get; set; }
+
         private DateTime NextProcessTimeUTC { get; set; }
 
         public abstract void Configure(Dictionary<string, string> parameters);
@@ -42,7 +55,6 @@ namespace Automata.Tasks
 
             if (HasConfiguration() && ProcessReady())
             {
-                LogSink.Write(LogEntry.Entry("Process()"));
                 return ProcessTask();
             }
 

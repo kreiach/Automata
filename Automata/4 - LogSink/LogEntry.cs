@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace Automata.LogSinks
 {
@@ -11,7 +10,7 @@ namespace Automata.LogSinks
         public string Message { get; private set; }
         public DateTime TimestampUTC { get; private set; }
 
-        public static LogEntry Entry(string message, LogEntryType entryType = LogEntryType.Error)
+        public static LogEntry Entry(string message, LogEntryType entryType = LogEntryType.Information)
         {
 
             if (message is null)

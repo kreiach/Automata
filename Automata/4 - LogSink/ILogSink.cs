@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 
-using Automata.LogSinks;
-
 namespace Automata.LogSinks
 {
     public interface ILogSink

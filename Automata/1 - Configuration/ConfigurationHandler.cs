@@ -85,18 +85,20 @@ namespace Automata.Configuration
             var taskGroups = new List<TaskGroupConfiguration>();
             foreach (XmlNode tasksGroups in section.SelectNodes("taskgroups/taskgroup"))
             {
-                string groupLogSinkName = tasksGroups.Attributes?["logsink"]?.Value;
+
                 bool taskGroupActive = tasksGroups.Attributes?["active"]?.Value == "true";
 
                 if (taskGroupActive)
                 {
+                    string taskGroupName = tasksGroups.Attributes?["name"].Value;
+                    string groupLogSinkName = tasksGroups.Attributes?["logsink"]?.Value;
 
                     LogSinkConfiguration logSinkConfig = logSinkConfigurations.Where(c => c.Name == groupLogSinkName).FirstOrDefault();
                     if (logSinkConfig is null)
                     {
                         throw new ArgumentException("logsink", "Parameter is not defined.");
                     }
-
+                    
                     Type groupLogSink = logSinkConfig.LogSink;
 
                     Type taskType;
@@ -105,6 +107,7 @@ namespace Automata.Configuration
                     var tasks = new List<Tuple<string, Type, Dictionary<string, string>>>();
                     foreach (XmlNode task in tasksGroups.SelectNodes("task"))
                     {
+                        
                         bool taskActive = task.Attributes?["active"]?.Value == "true";
                         
                         if (taskActive)
@@ -132,6 +135,7 @@ namespace Automata.Configuration
                     {
                         var tasksGroup = new TaskGroupConfiguration
                         {
+                            Name = taskGroupName,
                             LogSink = groupLogSink,
                             Tasks = tasks.ToArray()
                         };
