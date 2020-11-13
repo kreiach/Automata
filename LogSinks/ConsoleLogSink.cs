@@ -11,9 +11,7 @@ namespace LogSinks
 
         public override void Write()
         {
-
             Console.WriteLine($"{logEntry.TimestampUTC}\t{Enum.GetName(typeof(LogEntryType), logEntry.EntryType)}\t{logEntry.Message}");
-
         }
 
         public override void Configure()

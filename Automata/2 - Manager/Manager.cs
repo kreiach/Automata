@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading;
 
 using Automata.Configuration;
 using Automata.Group;
@@ -17,9 +14,6 @@ namespace Automata.Management
 
         public static bool Enabled;
         public static bool Running;
-
-
-        private Timer timer;
 
         private readonly AutomataConfiguration configuration;
         private static List<TaskGroup> taskGroups = new List<TaskGroup>();
@@ -42,9 +36,11 @@ namespace Automata.Management
 
             foreach (var group in this.configuration.TaskGroups)
             {
-
+                
                 var taskGroup = new TaskGroup();
-                var tasks = new List<Task>();
+                taskGroup.Name = group.Name;
+
+                var tasks = new List<ITask>();
 
                 if (!logSinks.ContainsKey(group.LogSink)) 
                 {
@@ -75,9 +71,9 @@ namespace Automata.Management
                     }
 
                     automationTask.Name = task.Item1;
-                    automationTask.GroupName = group.Name;
+                    automationTask.GroupName = taskGroup.Name;
 
-                    tasks.Add((Task)automationTask);
+                    tasks.Add(automationTask);
                 }
 
                 taskGroup.AutomationTasks = tasks.ToArray();
@@ -86,76 +82,6 @@ namespace Automata.Management
             }
 
         }
-
-
-        //public void StartGoverner()
-        //{
-
-        //    timer = new Timer();
-
-        //    timer.Elapsed += new ElapsedEventHandler(Governer);
-        //    timer.Interval = (double)configuration.PollingInSeconds * 1000;
-        //    timer.AutoReset = true;
-        //    timer.Enabled = true;
-        //    timer.Start();
-
-        //}
-
- 
-
-
-
-        //    void EventPublish(IMetric publishMetric)
-        //    {
-        //        if (this.configuration == null) return;
-
-        //        publishMetric.Dimensions = this.Dimensions;
-
-        //        System.Diagnostics.Trace.WriteLine(ConsoleMetricsSink.MetricString(new[] { publishMetric }));
-        //        System.Diagnostics.Trace.Flush();
-
-        //        foreach (var group in configuration.Groups)
-        //        {
-        //            var sink = group.Sink;
-        //            foreach (var metricType in group.MetricsTypes)
-        //            {
-        //                if (publishMetric.GetType() == metricType)
-        //                {
-        //                    sinks[sink].Publish(publishMetric);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    public void Publish(IMetric metric)
-        //    {
-
-        //        if (metric == null)
-        //            return;
-
-        //        eventQueue.Enqueue(metric);
-        //        PublishQueue();
-        //    }
-
-        //    public void Publish(IMetric[] metrics)
-        //    {
-
-        //        if (metrics == null)
-        //            return;
-
-        //        foreach (IMetric imetric in metrics)
-        //            eventQueue.Enqueue(imetric);
-
-        //        PublishQueue();
-        //    }
-
-        //    void PublishQueue()
-        //    {
-        //        do
-        //        {
-        //            EventPublish((IMetric)eventQueue.Dequeue());
-        //        } while (eventQueue.Count != 0);
-        //    }
 
         public void Dispose()
         {
@@ -166,19 +92,9 @@ namespace Automata.Management
         {
             if (disposing) {
                 taskGroups.Clear();
-                timer.Dispose();
             }
         }
 
-        //public void Publish(TaskGroupConfiguration taskGroup)
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        //public void Publish(TaskGroupConfiguration[] taskGroups)
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }
 

@@ -33,20 +33,27 @@ namespace LogSinks
             this.eventLog = eventLog;
         }
 
+        private static readonly object _lock = new object();
+
         public override void Write()
         {
 
-            if (this.eventLog.Log is null)
+            lock (_lock)
             {
-                throw new ArgumentNullException("Log", "No event log has been specified.");
-            }
 
-            if (logEntry is null)
-            {
-                throw new ArgumentNullException("logEntry", "No log entry has been specified.");
-            }
+                if (this.eventLog.Log is null)
+                {
+                    throw new ArgumentNullException("Log", "No event log has been specified.");
+                }
 
-            eventLog.WriteEntry(logEntry.Message, (EventLogEntryType)logEntry.EntryType);
+                if (logEntry is null)
+                {
+                    throw new ArgumentNullException("logEntry", "No log entry has been specified.");
+                }
+
+                eventLog.WriteEntry(logEntry.Message, (EventLogEntryType)logEntry.EntryType);
+
+            }
 
         }
 

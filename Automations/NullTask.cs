@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+
 using Automata.Tasks;
 
 namespace Automations
@@ -6,17 +8,13 @@ namespace Automations
     public class NullTask : Task
     {
 
-        public override void Configure(Dictionary<string, string> parameters)
+        public override DateTime NextProcessTimeUTC { get; protected set; }
+
+        protected override void Configure()
         {
             ;
         }
 
-
-        // true if the automation task has all the required properties set
-        public override bool HasConfiguration()
-        {
-            return base.HasConfiguration();
-        }
 
         // true if the process ran successfully
         public override bool ProcessTask()

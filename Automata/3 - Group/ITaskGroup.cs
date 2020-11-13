@@ -7,6 +7,11 @@ namespace Automata.Group
     public interface ITaskGroup
     {
 
+        string Name
+        {
+            get; set;
+        }
+
         ILogSink LogSink
         {
             get; set;
@@ -17,6 +22,7 @@ namespace Automata.Group
             get; set;
         }
 
+        bool ProcessReady();
     }
 
 }

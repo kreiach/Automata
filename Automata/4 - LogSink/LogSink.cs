@@ -9,15 +9,22 @@ namespace Automata.LogSinks
         public Dictionary<string, string> parameters;
         public LogEntry logEntry;
 
+        private static readonly object _lock = new object();
+
         public virtual void Write(LogEntry logEntry)
         {
 
-            if (logEntry is null)
-                throw new ArgumentNullException("logEntry", "No log entry has been specified.");
+            lock (_lock)
+            {
 
-            this.logEntry = logEntry;
+                if (logEntry is null)
+                    throw new ArgumentNullException("logEntry", "No log entry has been specified.");
 
-            this.Write();
+                this.logEntry = logEntry;
+
+                this.Write();
+
+            }
 
         }
 

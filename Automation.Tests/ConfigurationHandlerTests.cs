@@ -134,6 +134,25 @@ namespace Automata.Tests
         }
 
         [TestMethod]
+        public void With_AutomataConfigurationHander_taskgroup_does_not_have_a_unique_name()
+        {
+
+            string section = @"<configuration><automata><taskgroups><taskgroup name=""Accounting"" logsink=""Null"" active=""true""><task name=""null1"" type=""Automations.NullTask, Automations"" active=""true""/></taskgroup><taskgroup name=""Accounting"" logsink=""Null"" active=""true""><task name=""null1"" type=""Automations.NullTask, Automations"" active=""true""/></taskgroup></taskgroups><logsinks><logsink name=""Null"" type=""LogSinks.Null, LogSinks"" /></logsinks></automata></configuration>";
+
+            var xdoc = new XmlDocument();
+            xdoc.LoadXml(section);
+            var node = xdoc.DocumentElement.SelectSingleNode("automata");
+
+            var automataConfigurationHandler = new ConfigurationHandler();
+
+            Assert.ThrowsException<ArgumentException>(() =>
+            {
+                var x = (Configuration.AutomataConfiguration)automataConfigurationHandler.Create(null, null, node);
+            });
+
+        }
+
+        [TestMethod]
         public void With_AutomataConfigurationHander_taskgroup_has_a_task()
         {
 

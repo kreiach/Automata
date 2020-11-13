@@ -1,5 +1,10 @@
-﻿using System.ComponentModel.Design;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
+using System.Linq;
 using System.Threading;
 
 namespace Automata.Management
@@ -25,18 +30,31 @@ namespace Automata.Management
             pauseRequested = false;
         }
 
-        public GovernerStatus Status
+        private GovernerStatus _governerStatus;
+        public string Status
         {
-            get;
-            private set;
-        }
+            get
+            {
+                return Enum.GetName(typeof(GovernerStatus), _governerStatus);
+            }
+        } 
 
-        public enum GovernerStatus
+        private enum GovernerStatus
         {
-            Stopped,
             Running,
+            Stopped,
             Paused
         }
+
+        public bool IsActive
+        {
+            get
+            {
+                return _governerStatus != GovernerStatus.Stopped;
+            }
+        }
+
+        List<Worker> Workers = new List<Worker>();
 
         public void Governer() 
         {
@@ -45,30 +63,53 @@ namespace Automata.Management
             var governerThread = new Thread(() =>
             {
 
-                Status = GovernerStatus.Running;
+                _governerStatus = GovernerStatus.Running;
 
-                int activeThreads = 1;
-
-                // TODO: Response to stop event from host application
-                while (!shutdownRequested && activeThreads > 0)
+                while (!shutdownRequested || (shutdownRequested && Workers.Count > 0))
                 {
+
+                    Console.Write($"\tGOVERNER: ShutdownRequested: {shutdownRequested}\tWorkers: {Workers.Count}\r\n");
 
                     if (pauseRequested)
                     {
-                        Status = GovernerStatus.Paused;
+                        _governerStatus = GovernerStatus.Paused;
                     }
                     else
                     {
-                        Status = GovernerStatus.Running;
+                        _governerStatus = GovernerStatus.Running;
 
                         foreach (var group in taskGroups)
                         {
-                            // TODO: start up a new thread per task group
 
-                            foreach (var task in group.AutomationTasks)
+                            if (!Workers.Where(x => x.Name == group.Name).Any())
                             {
-                                task.Process();
+
+                                if (!shutdownRequested)
+                                {
+
+                                    if (group.ProcessReady())
+                                    {
+                                        var worker = new Worker(group);
+                                        Workers.Add(worker);
+                                        Thread thread = new Thread(new ThreadStart(worker.ProcessTaskGroup));
+                                        thread.Start();
+                                    }
+
+                                }
+                            
+                            } 
+                            else
+                            {
+
+                                var worker = Workers.Where(x => x.Name == group.Name).FirstOrDefault();
+                                if (!worker.Active)
+                                {
+                                    Workers.Remove(worker);
+                                }
+
                             }
+
+                            
 
                         }
                     }
@@ -76,12 +117,49 @@ namespace Automata.Management
                     Thread.Sleep((int)configuration.PollingInSeconds * 1000);
                 }
 
-                Status = GovernerStatus.Stopped;
+                _governerStatus = GovernerStatus.Stopped;
 
             });
 
             governerThread.Start();
  
+        }
+
+        private class Worker
+        {
+
+            public string Name 
+            {
+                get 
+                {
+                    return Group.Name;
+                }
+            }
+
+            public Group.TaskGroup Group;
+            public bool Active = true;
+
+            public Worker(Group.TaskGroup group) 
+            {
+                Group = group;
+            }
+
+            public void ProcessTaskGroup()
+            {
+                foreach (var task in Group.AutomationTasks)
+                {
+                    if (task.ProcessReady())
+                    {
+
+                        task.Process();
+
+                    }
+                }
+
+                Active = false;
+
+                Thread.CurrentThread.Interrupt();
+            }
         }
 
     }

@@ -91,6 +91,16 @@ namespace Automata.Configuration
                 if (taskGroupActive)
                 {
                     string taskGroupName = tasksGroups.Attributes?["name"].Value;
+
+                    // make sure the name is unique among task groups
+                    foreach (var g in taskGroups)
+                    {
+                        if (g.Name == taskGroupName)
+                        {
+                            throw new ArgumentException("taskgroupname", "The name must be unique.");
+                        }
+                    }
+
                     string groupLogSinkName = tasksGroups.Attributes?["logsink"]?.Value;
 
                     LogSinkConfiguration logSinkConfig = logSinkConfigurations.Where(c => c.Name == groupLogSinkName).FirstOrDefault();

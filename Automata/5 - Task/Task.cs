@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Runtime.CompilerServices;
 using Automata.LogSinks;
 
 namespace Automata.Tasks
 {
     public abstract class Task : ITask
     {
+
         private string _name;
         public string Name 
         {
@@ -20,11 +21,21 @@ namespace Automata.Tasks
             }
         }
 
+        public Dictionary<string, string> parameters;
+
         public string GroupName { get; set; }
 
-        private DateTime NextProcessTimeUTC { get; set; }
+        public abstract DateTime NextProcessTimeUTC { get; protected set; }
 
-        public abstract void Configure(Dictionary<string, string> parameters);
+        protected bool IsConfigured = true;
+        public void Configure(Dictionary<string, string> parameters)
+        {
+            this.parameters = parameters;
+            this.Configure();
+        }
+
+        protected abstract void Configure();
+
         public abstract bool ProcessTask();
 
         public ILogSink LogSink
@@ -44,10 +55,12 @@ namespace Automata.Tasks
         }
 
         // true if the automation task has all the required properties set
-        public virtual bool HasConfiguration()
+        public bool HasConfiguration()
         {
-            return LogSink != null;
+            return LogSink != null && IsConfigured;
         }
+
+        private static readonly object _lock = new object();
 
         // true if the process ran successfully
         public bool Process()
@@ -59,6 +72,7 @@ namespace Automata.Tasks
             }
 
             return false;
+        
         }
 
     }

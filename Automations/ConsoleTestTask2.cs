@@ -9,7 +9,7 @@ namespace Automations
 
     // This class is used for testing with the AutomataHost.Console project
  
-    public class ConsoleTestTask : Task
+    public class ConsoleTestTask2 : Task
     {
 
         public override DateTime NextProcessTimeUTC { get; protected set; }
@@ -17,8 +17,7 @@ namespace Automations
         protected override void Configure()
         {
             // check for parameters here 
-
-            this.IsConfigured = true;
+            // set this.IsConfigured = false if configuration failed;
         }
 
         // true if the process ran successfully
@@ -36,7 +35,7 @@ namespace Automations
 
             LogSink.Write(LogEntry.Entry($"\t\tTASK: Processing {Name}\t{randomNumber}\t{num}\r\n"));
 
-            Thread.Sleep(5000);
+            Thread.Sleep(3000);
 
             NextProcessTimeUTC = DateTime.UtcNow.AddSeconds(randomNumber);
             return true;
