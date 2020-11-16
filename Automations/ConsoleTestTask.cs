@@ -18,7 +18,7 @@ namespace Automations
         {
             // check for parameters here 
 
-            this.IsConfigured = true;
+            // this.IsConfigured = true;
         }
 
         // true if the process ran successfully
@@ -34,7 +34,7 @@ namespace Automations
             Random random = new Random((int)DateTime.Now.Ticks & 0x0000FFFF);
             int randomNumber = random.Next(5, 20);
 
-            LogSink.Write(LogEntry.Entry($"\t\tTASK: Processing {Name}\t{randomNumber}\t{num}\r\n"));
+            LogSink.Write(LogEntry.Entry($"TASK: Processing {Name}\t{randomNumber}\t{num}\r\n"));
 
             Thread.Sleep(5000);
 
